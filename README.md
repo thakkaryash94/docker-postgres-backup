@@ -9,11 +9,16 @@ Every Postgres Environment variables are supported. You can read more [here](htt
 
 Below environment variables are tested.
 
+#### Required variables
+
 - PGHOSTADDR
 - PGPORT
 - PGDATABASE
 - PGUSER
 - PGPASSWORD
+
+#### Optional Variables
+
 - S3_ACCESS_KEY
 - S3_SECRET_KEY
 - S3_HOST
