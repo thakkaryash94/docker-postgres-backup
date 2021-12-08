@@ -12,7 +12,7 @@ echo "$(date): pg_dump completed"
 
 if [ -z "$S3_HOST" ]; then :
   else
-    if [ -z "$S3_BUCKET"] || [-z "$S3_ACCESS_KEY"] || [-z "$S3_SECRET_KEY" ]; then
+    if [ -z "$S3_BUCKET" ] || [ -z "$S3_ACCESS_KEY" ] || [ -z "$S3_SECRET_KEY" ]; then
       echo "Some required S3 env variable(s) are missing"
     else
       echo "$(date): S3 backup uploading started"
