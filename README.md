@@ -3,13 +3,15 @@
 This repo contains backup postgres database using Docker image.
 
 
-### Environment Variables
+## Environment Variables
 
 Every Postgres Environment variables are supported. You can read more [here](https://www.postgresql.org/docs/current/libpq-envars.html)
 
 Below environment variables are tested.
 
-#### Required variables
+### Required variables
+
+For DB Backup:
 
 - PGHOSTADDR
 - PGPORT
@@ -17,7 +19,14 @@ Below environment variables are tested.
 - PGUSER
 - PGPASSWORD
 
-#### Optional Variables
+For POA:
+
+- POA_BASE_URL
+- POA_TOKEN
+- POA_HC_DISTRIBUTE_URL
+- POA_HC_WATCHTIME_URL
+
+### Optional Variables
 
 - S3_ACCESS_KEY
 - S3_SECRET_KEY

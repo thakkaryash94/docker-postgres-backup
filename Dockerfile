@@ -1,12 +1,14 @@
 FROM alpine
 
-RUN apk add --no-cache tini postgresql-client
+RUN apk add --no-cache tini postgresql-client curl
 
 RUN apk add s3cmd --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
 
-COPY backup.sh entrypoint.sh /
+COPY entrypoint.sh /
+COPY scripts /scripts
 
-RUN chmod +x backup.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
+RUN find /scripts/ -type f -iname "*.sh" -exec chmod +x {} \;
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
