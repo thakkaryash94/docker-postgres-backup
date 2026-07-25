@@ -1,16 +1,13 @@
-FROM alpine
+FROM alpine:3.24.1
 
-RUN apk add --no-cache tini postgresql-client
+RUN apk add --no-cache tini bash postgresql18-client ca-certificates curl \
+    && curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc \
+    && chmod +x /usr/local/bin/mc \
+    && apk del curl
 
-RUN apk add s3cmd --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
-
-COPY backup.sh entrypoint.sh /
-
-RUN chmod +x backup.sh entrypoint.sh
+COPY entrypoint.sh backup.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/backup.sh
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-VOLUME [ "/backups" ]
-
-# Run your program under Tini
-CMD ["/entrypoint.sh"]
+CMD ["/usr/local/bin/entrypoint.sh"]

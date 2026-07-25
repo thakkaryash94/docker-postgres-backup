@@ -1,26 +1,20 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 
-echo "$(date): backup process started"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+FILENAME="${PGDATABASE}_${TIMESTAMP}.sql.gz"
+S3_PATH="default/${S3_BUCKET}/${FILENAME}"
 
-echo "$(date): pg_dump started for ${PGDATABASE}"
+echo "[$(date)] Starting backup of $PGDATABASE..."
 
-FILE=/backups/$PGDATABASE-$(date +\%FT\%H-%M-%S).sql.gz
+PGPASSWORD="$PGPASSWORD" pg_dump \
+    -h "$PGHOST" \
+    -p "$PGPORT" \
+    -U "$PGUSER" \
+    -d "$PGDATABASE" \
+    --no-owner \
+    --no-acl \
+    | gzip \
+    | mc pipe "$S3_PATH"
 
-pg_dump | /bin/gzip > $FILE
-
-echo "$(date): pg_dump completed"
-
-if [ -z "$S3_HOST" ]; then :
-  else
-    if [ -z "$S3_BUCKET" ] || [ -z "$S3_ACCESS_KEY" ] || [ -z "$S3_SECRET_KEY" ]; then
-      echo "Some required S3 env variable(s) are missing"
-    else
-      echo "$(date): S3 backup uploading started"
-      s3cmd put $FILE s3://$S3_BUCKET --access_key=$S3_ACCESS_KEY --secret_key=$S3_SECRET_KEY --host=$S3_HOST
-      echo "$(date): S3 backup uploading completed"
-      rm $FILE
-      echo "$(date): local backup ${FILE} removed"
-    fi
-fi
-
-echo "$(date): backup process completed"
+echo "[$(date)] Backup uploaded: s3://${S3_BUCKET}/${FILENAME}"
